@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sealed-secret-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sealed-secret-app
+  template:
+    metadata:
+      labels:
+        app: sealed-secret-app
+    spec:
+      containers:
+        - name: secret-app
+          image: secret-app:0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sealed-my-secret
+                  key: my-secret

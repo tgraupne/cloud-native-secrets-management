@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eso-secret-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eso-secret-app
+  template:
+    metadata:
+      labels:
+        app: eso-secret-app
+    spec:
+      containers:
+        - name: secret-app
+          image: secret-app:0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: eso-my-secret
+                  key: MY_SECRET

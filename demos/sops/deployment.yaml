@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sops-secret-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sops-secret-app
+  template:
+    metadata:
+      labels:
+        app: sops-secret-app
+    spec:
+      containers:
+        - name: secret-app
+          image: secret-app:0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: secret-volume
+              mountPath: "/etc/secret"
+              readOnly: true
+      volumes:
+        - name: sops-secret-volume
+          secret:
+            secretName: sops-my-secret

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csi-dynamic-secret-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-dynamic-secret-app
+  template:
+    metadata:
+      labels:
+        app: csi-dynamic-secret-app
+    spec:
+      serviceAccountName: app-sa
+      containers:
+        - name: secret-app
+          image: dynamic-secret-app:0.0.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: csi-dynamic-secrets-store-inline
+              mountPath: "/etc/secret"
+              readOnly: true
+      volumes:
+        - name: csi-dynamic-secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "csi-dynamic-vault-database"

@@ -13,6 +13,12 @@ brew install kubeseal
 
 ### Infrastructure
 
+### Starting minikube
+
+```bash
+minikube start --driver=docker --profile=minikube-sealed
+```
+
 ```bash
 # install the sealed secrets operator
 kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.23.0/controller.yaml
@@ -52,7 +58,7 @@ kubectl apply -f deployment.yaml
 ```bash
 kubectl expose deployment sealed-secret-app --type=NodePort --port=8080
 
-minikube service sealed-secret-app
+minikube service sealed-secret-app  --profile minikube-sealed
 ```
 
 ## Clean up

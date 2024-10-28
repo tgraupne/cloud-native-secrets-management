@@ -4,14 +4,13 @@ In this example, we use External-Secrets-Operator to sync secrets stored in a lo
 
 ## Install prerequisites
 
-### MacOS
+### Infrastructure
+
+### Starting minikube
 
 ```bash
-# install the tool kubeseal for encryption
-brew install kubeseal
+minikube start --driver=docker --profile=minikube-eso
 ```
-
-### Infrastructure
 
 ```bash
 # add helm chart repos of hashicorp vault and eso
@@ -26,12 +25,11 @@ helm install external-secrets external-secrets/external-secrets
 # enable eso to talk to vault
 kubectl apply -f vault-secret.yaml
 kubectl apply -f vault-secret-store.yaml
-
 ```
 
 ## Configure and Deploy Demo
 
-## Store a secret inside vault
+### Store a secret inside vault
 
 ```bash
 # Login to Vault using the CLI
@@ -70,7 +68,7 @@ kubectl apply -f deployment.yaml
 ```bash
 kubectl expose deployment eso-secret-app --type=NodePort --port=8080
 
-minikube service eso-secret-app
+minikube service eso-secret-app  --profile minikube-eso
 ```
 
 ## Clean up

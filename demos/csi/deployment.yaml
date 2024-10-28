@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csi-secret-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-secret-app
+  template:
+    metadata:
+      labels:
+        app: csi-secret-app
+    spec:
+      serviceAccountName: app-sa
+      containers:
+        - name: secret-app
+          image: secret-app:0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: csi-secrets-store-inline
+              mountPath: "/etc/secret"
+              readOnly: true
+      volumes:
+        - name: csi-secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "csi-vault-database"

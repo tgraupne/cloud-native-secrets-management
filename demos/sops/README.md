@@ -25,6 +25,12 @@ gpg --list-secret-keys --keyid-format LONG
 gpg --export-secret-keys --armor <YOUR_GPG_KEY_ID> > private-key.asc
 ```
 
+### Starting minikube
+
+```bash
+minikube start --driver=docker --profile=minikube-sops
+```
+
 Store the content of `private-key.asc` as a GitHub secret named `GPG_PRIVATE_KEY`. 
 
 **Example GitHub Actions Configuration**
@@ -97,7 +103,7 @@ kubectl apply -f deployment.yaml
 ```bash
 kubectl expose deployment sops-secret-app --type=NodePort --port=8080
 
-minikube service sops-secret-app
+minikube service sops-secret-app  --profile minikube-sops
 ```
 
 ## Clean up

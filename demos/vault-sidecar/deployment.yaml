@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-sc-secret-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-sc-secret-app
+  template:
+    metadata:
+      labels:
+        app: vault-sc-secret-app
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/role: "app"
+        vault.hashicorp.com/agent-inject-secret-my-secret: "secret/data/myapp"
+        vault.hashicorp.com/secret-volume-path: "/etc/secret/"
+#        vault.hashicorp.com/static_secret_render_interval: "10s"
+#        vault.hashicorp.com/agent-configmap: "my-configmap"
+        vault.hashicorp.com/agent-inject-template-my-secret: |
+          {{- with secret "secret/data/myapp" -}}
+          {{ .Data.data.SECRET_VALUE }}
+          {{- end }}
+    spec:
+      serviceAccountName: app-sa
+      containers:
+        - name: secret-app
+          image: dynamic-and-delete-secret-app:0.0.5
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080

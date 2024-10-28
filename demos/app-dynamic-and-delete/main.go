@@ -89,18 +89,27 @@ func main() {
 // refreshSecret reads the secret from the file, updates the in-memory value, and deletes the file content
 func refreshSecret(secretFilePath string) {
 	file, err := os.Open(secretFilePath)
+	defer file.Close()
 	if err != nil {
-		log.Printf("Failed to open secret file: %v", err)
+		log.Printf("Failed to open secret from file: %v Reading from env var", err)
+		secretValue = []byte(getEnv("MY_SECRET", "Super Secret Default Secret"))
 		return
 	}
-	defer file.Close()
 
 	r := bufio.NewReader(file)
 	newSecretValue, _, err := r.ReadLine()
 	if err != nil {
-		log.Printf("Failed to read secret from file: %v", err)
+		log.Printf("Failed to open secret from file: %v Reading from env var", err)
+		secretValue = []byte(getEnv("MY_SECRET", "Super Secret Default Secret"))
 		return
 	}
+
+	//// Clear the file content after reading the secret
+	//err = os.WriteFile(secretFilePath, []byte{}, 0644)
+	//if err != nil {
+	//	log.Printf("Failed to clear secret file: %v", err)
+	//	return
+	//}
 
 	if !bytes.Equal(secretValue, newSecretValue) {
 		log.Printf("NEW SECRET VALUE FOUND")

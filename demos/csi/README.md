@@ -92,18 +92,6 @@ vault login token=root
 vault kv put secret/myapp SECRET_VALUE=my-secret-vault-value
 ```
 
-### Create encrypted Kubernetes Secret
-
-```bash
-# example: encode base64 on macos
-echo -n "your-text-here" | base64
-
-# example: decode base64 on macos
-echo -n "SGVsbG8sIFdvcmxkIQ==" | base64 --decode
-```
-
-### Deploy Kubernetes Secret
-
 ### Deploy the Application
 
 ```bash

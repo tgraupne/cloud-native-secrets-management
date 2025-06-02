@@ -24,15 +24,13 @@ helm repo update
 helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver \
   --namespace kube-system \
   --set syncSecret.enabled=true \
-  --set enableSecretRotation=true
+  --set "enableSecretRotation=true" \
+  --set "rotationPollInterval=5s"
 
 # install hashicorp vault and csi driver
 helm install vault hashicorp/vault \
   --set "server.dev.enabled=true" \
-  --set "injector.enabled=false" \
-  --set "csi.enabled=true" \
-  --set "enableSecretRotation=true" \
-  --set "rotationPollInterval=5s"
+  --set "injector.enabled=false"
 ```
 
 ### Configuring vault
@@ -98,18 +96,6 @@ vault login token=root
 # Adding the Secret
 vault kv put secret/myapp-dynamic SECRET_VALUE=MY-DYNAMIC-SECRET-VALUE
 ```
-
-### Create encrypted Kubernetes Secret
-
-```bash
-# example: encode base64 on macos
-echo -n "your-text-here" | base64
-
-# example: decode base64 on macos
-echo -n "SGVsbG8sIFdvcmxkIQ==" | base64 --decode
-```
-
-### Deploy Kubernetes Secret
 
 ### Deploy the Application
 

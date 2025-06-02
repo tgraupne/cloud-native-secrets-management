@@ -11,4 +11,3 @@ spec:
       - objectName: "my-secret"
         secretPath: "secret/data/myapp-dynamic"
         secretKey: "SECRET_VALUE"
-#    rotationPollInterval: "5s"
